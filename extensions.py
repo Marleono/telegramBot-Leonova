@@ -6,6 +6,7 @@ from config import keys
 class APIException(Exception):
     pass
 
+
 class Conversion:
     @staticmethod
     def get_price(quote: str, base: str, amount: str):
@@ -27,8 +28,7 @@ class Conversion:
         except ValueError:
             raise APIException(f'Не удалось обработать количество {amount}')
 
+        r = requests.get(f'https://api.exchangeratesapi.io/latest?base={quote_ticker}&symbols={base_ticker}')
+        total_base = json.loads(r.content)['rates'][keys[base]]
 
-        r = requests.get(f'https://api.exchangeratesapi.io/latest?symbols={quote_ticker},{base_ticker}')
-        total_base = json.loads(r.content)[keys[base]]
-
-        return total_base
+        return total_base*amount
